@@ -1,1 +1,0 @@
-# Polytropic_Approximation
