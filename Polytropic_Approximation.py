@@ -19,7 +19,7 @@
 # Instructions:
 # To perform an accuracy calculation as described in the paper, run this file 
 # in Python 2.7, e.g.,
-#   $ python -m Polytropic_Approximation.py
+#   $ python Polytropic_Approximation.py
 # Results will print to stdout
 
 from math import acos, cos, exp, isnan, log, pi, sqrt
