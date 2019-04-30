@@ -162,7 +162,12 @@ def Choked_Trig(gamma, K):
 @jit
 def Choked_Best_Fit(gamma, K):
 # Finds the choking pressure drop ratio using Eq. (34) in the current paper.
-    return exp( -exp(0.43 - 0.6*gamma) * K**-0.43 )
+    return exp( -exp(0.43 - 0.6*gamma - 0.43*log(K)))
+
+@jit
+def Choked_Best_Fit2(gamma, K):
+# Finds the choking pressure drop ratio using Eq. (35) in the current paper.
+    return exp( -exp(0.43 - 0.6*gamma - 0.0005*K - 0.43*log(K)))
 
 def main():    
     num_tests = 1000000
@@ -258,7 +263,7 @@ def main():
     print("\n")
     
     # Reinitialize arrays for checking choking pressure
-    num_entries = 3
+    num_entries = 4
     values = zeros(num_entries)
     error = zeros(num_entries)
     sums = zeros(num_entries)
@@ -278,7 +283,8 @@ def main():
         values[theory] = 1. - Find_Choked(gamma, K)
         values[trig] = Choked_Trig(gamma, K)
         values[fitted] = Choked_Best_Fit(gamma, K)
-        for i in range(trig, fitted+1):
+        values[fitted+1] = Choked_Best_Fit2(gamma, K)
+        for i in range(trig, fitted+2):
             error[i] = (values[i] - values[theory]) / values[theory]
             if error[i] > maxerr[i]:
                 maxerr[i] = error[i]
@@ -297,9 +303,10 @@ def main():
         
     lables = (["Theoretical Value",
         "Trigonometric Approximation of Choking Pressure:",
-        "Best Fit Equation for Choking Pressure:"])
+        "Best Fit Equation for Choking Pressure:",
+        "Modified Best Fit Equation:"])
     
-    for i in range(1,fitted+1):
+    for i in range(1,fitted+2):
         print(lables[i])
         print("\tStandard deviation is " + str(sqrt(sums[i]/num_tests)))
         print("\tMaximum error is "+ str(maxerr[i]) + " at K = " + str(maxK[i])
@@ -308,4 +315,3 @@ def main():
             + " and gamma = " + str(mingam[i]))
 
 main()
-
